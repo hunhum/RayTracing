@@ -370,7 +370,6 @@ namespace toctt{
             this->ptrs_triangles.push_back(i);
         }
         node = this;
-        stack.clear();
         stack.push_back(node);
         for(;!stack.empty();){
             node = stack.back();
@@ -391,11 +390,11 @@ namespace toctt{
             b[7].middle = {node->boundary.middle.x-s.x,node->boundary.middle.y+s.y,node->boundary.middle.z-s.z};
             for(int i = 0; i < 8; i++){
                 b[i].size = s;
+                triangles_by_octants[i].clear();
             }
-            triangles_by_octants->clear();
             for(auto t : node->ptrs_triangles){
                 for(int i = 0; i < 8; i++){
-                    if(b[i].contains_triangle(triangles[t])){
+                    if(b[i].contains_triangle(this->triangles[t])){
                         triangles_by_octants[i].push_back(t);
                     }
                 }
@@ -406,7 +405,6 @@ namespace toctt{
                     node->child[i] = nullptr;
                 }
                 else{
-                    //std::cout << "size = " <<s.x << " " << s.y << " " << s.z << " middle = " << b[i].middle.x << " " << b[i].middle.y << " " << b[i].middle.z << std::endl;
                     node->child[i] = new TriangleOctTree(b[i]);
                     node->child[i]->ptrs_triangles = triangles_by_octants[i];
                     stack.push_back(node->child[i]);

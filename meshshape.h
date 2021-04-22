@@ -6,7 +6,6 @@
 
 class MeshShape:public Shape
 {
-    Point centre;
     double psi;
     double fi;
     double teta;
@@ -14,10 +13,8 @@ class MeshShape:public Shape
     toctt::TriangleOctTree *octtree;
 public:
     MeshShape() = delete;
-    MeshShape(const std::vector<Triangle>&);
-    MeshShape(Point centre, double psi, double fi, double teta,const std::vector<Triangle>&);
-    MeshShape(std::ifstream &file);
-    MeshShape(Point centre, double psi, double fi, double teta,std::ifstream &file);
+    MeshShape(const std::vector<Triangle>&,Point centre = {0,0,0}, double psi = 0.0, double fi = 0.0, double teta = 0.0);
+    MeshShape(std::ifstream &file,Point centre = {0,0,0}, double psi = 0.0, double fi = 0.0, double teta = 0.0);
     ~MeshShape();
     void make_octtree();
     XYZ coord_transform_to_local(XYZ);

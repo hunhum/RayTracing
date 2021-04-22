@@ -1,6 +1,6 @@
 #include "sphere.h"
 
-Sphere::Sphere(Point centre, double r):centre(centre),r(r){}
+Sphere::Sphere(Point centre, double r):Shape(centre),r(r){}
 bool Sphere::intersections_with_ray(Ray ray, double *t, Vector *normal){
     double a = ray.direction*ray.direction;
     double b = ray.direction*(ray.begin-centre);

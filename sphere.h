@@ -5,7 +5,6 @@
 class Sphere:public Shape
 {
 private:
-    Point centre;
     double r;
 public:
     Sphere() = delete;

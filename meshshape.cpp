@@ -1,30 +1,6 @@
 #include "meshshape.h"
 #include<chrono>
-
-MeshShape::MeshShape(std::ifstream &file):centre({}),psi(0),fi(0),teta(0){
-    std::string str;
-    Triangle t;
-    Point p;
-    int v0,v1,v2;
-    std::vector<Point> points;
-    while(getline(file,str)){
-        if(str[0] == 'v' && str[1] != 'n'){
-             if(sscanf(str.c_str()+1,"%lf %lf %lf",&p.x,&p.y,&p.z)==3){
-                points.push_back(p);
-             }
-        }
-        if(str[0] == 'f'){
-            if(sscanf(str.c_str()+1,"%d %d %d",&v0,&v1,&v2)==3){
-                t.p0 = points[v0-1];
-                t.p1 = points[v1-1];
-                t.p2 = points[v2-1];
-                triangles.push_back(t);
-            }
-        }
-    }
-    make_octtree();
-}
-MeshShape::MeshShape(Point centre, double psi, double fi, double teta,std::ifstream &file):centre(centre),psi(psi),fi(fi),teta(teta){
+MeshShape::MeshShape(std::ifstream &file,Point centre, double psi, double fi, double teta):Shape(centre),psi(psi),fi(fi),teta(teta){
     std::string str;
     Triangle t;
     Point p;
@@ -50,10 +26,7 @@ MeshShape::MeshShape(Point centre, double psi, double fi, double teta,std::ifstr
     printf("triangles number = %d\n",triangles.size());
     make_octtree();
 }
-MeshShape::MeshShape(const std::vector<Triangle>& triangles):centre({0,0,0}),psi(0),fi(0),teta(0),triangles(triangles){
-    make_octtree();
-}
-MeshShape::MeshShape(Point centre, double psi, double fi, double teta,const std::vector<Triangle>& triangles):centre(centre),psi(psi),fi(fi),teta(teta),triangles(triangles){
+MeshShape::MeshShape(const std::vector<Triangle>& triangles,Point centre, double psi, double fi, double teta):Shape(centre),psi(psi),fi(fi),teta(teta),triangles(triangles){
     make_octtree();
 }
 MeshShape::~MeshShape(){
@@ -106,7 +79,7 @@ bool MeshShape::intersections_with_ray(Ray ray, double *t, Vector *normal){
     lray.begin = coord_transform_to_local(ray.begin-centre);
     lray.direction = coord_transform_to_local(ray.direction);
     if(octtree == nullptr){
-        throw std::exception();
+        throw std::runtime_error("OctTree not created!!!\n");
     }
     else{
         if(!octtree->intersections_with_ray(lray,&tmin,&qq)){

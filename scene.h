@@ -3,6 +3,7 @@
 #include"base.h"
 #include"shape.h"
 #include"CImg.h"
+#include<omp.h>
 
 class Scene
 {
