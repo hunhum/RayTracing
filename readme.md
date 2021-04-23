@@ -1,1 +1,1 @@
-![Example](https://3.downloader.disk.yandex.ru/preview/220fd42edbea4379170f72de948cefe5d91966f74398c0b17d22cb385acc4bd1/inf/jksy3LlkNsftUGgpYm9vDZp2eyYf35gqr-tQrI8CvrCoI7UtVGTu6HV2WQAfyrPAGgIGLpOqt2RTtusMF2U4kg%3D%3D?uid=268002087&filename=example.bmp&disposition=inline&hash=&limit=0&content_type=image%2Fjpeg&owner_uid=268002087&tknv=v2&size=1906x949)
+
