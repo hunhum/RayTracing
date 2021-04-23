@@ -1,5 +1,6 @@
 #ifndef MESHSHAPE_H
 #define MESHSHAPE_H
+#include"base.h"
 #include"shape.h"
 #include"triangle.h"
 #include"octotree.h"
