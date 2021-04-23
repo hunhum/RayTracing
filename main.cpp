@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 #include"octotree.h"
 #include"sphere.h"
 #include"meshshape.h"

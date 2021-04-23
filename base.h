@@ -1,6 +1,7 @@
 #ifndef BASE_H
 #define BASE_H
 #include<vector>
+#include<string>
 #include<limits>
 #include<cmath>
 #include<iostream>
