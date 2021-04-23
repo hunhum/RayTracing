@@ -29,8 +29,8 @@ void Scene::render(const char *filename){
     constexpr unsigned char min_color = 64;
     constexpr unsigned char max_color = 191;
 
-    double min_dist;
-    double max_dist;
+    double min_dist = std::numeric_limits<double>::max();
+    double max_dist =  std::numeric_limits<double>::min();;
 
     for(auto obj : objects){
         if((obj->centre-cam).lenght() < min_dist){

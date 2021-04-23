@@ -10,7 +10,6 @@ using namespace std;
 
 int main()
 {
-    ifstream file("toyota-supra.obj");
     std::string str;
     int n,i = 0;
     char *buff = new char[1024];
@@ -192,6 +191,10 @@ int main()
                 return -1;
             }
             ifstream ts("toyota-supra.obj");
+            if(ts.fail()){
+                fprintf(stderr,"File toyota-supra.obj did not open!!!\n");
+                return -1;
+            }
             objects.push_back(new MeshShape(ts,centre,psi,fi,teta));
         }
         else{
