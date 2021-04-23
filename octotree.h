@@ -3,6 +3,8 @@
 #include "base.h"
 #include"triangle.h"
 #include<set>
+#define MIN_SIZE 0.00125
+
 namespace  toctt{
     struct Box{
         Point middle;
@@ -19,12 +21,12 @@ namespace  toctt{
         TriangleOctTree* child[8];
         std::vector<Triangle> triangles;
         std::vector<int> ptrs_triangles;//stores the triangle number in vector
-        const double min_size = 0.00125;
+        const double min_size =  MIN_SIZE;
         Box boundary;
     public:
         TriangleOctTree() = delete;
-        TriangleOctTree(Box);
-        TriangleOctTree(Box,const std::vector<Triangle>&);
+        TriangleOctTree(Box,double min_size = MIN_SIZE);
+        TriangleOctTree(Box,const std::vector<Triangle>&, double min_size = MIN_SIZE);
         TriangleOctTree(const TriangleOctTree&) = delete;
         TriangleOctTree(TriangleOctTree&&) = delete;
         ~TriangleOctTree();

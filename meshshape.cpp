@@ -1,13 +1,13 @@
 #include "meshshape.h"
 #include<chrono>
-MeshShape::MeshShape(std::ifstream &file,Point centre, double psi, double fi, double teta):Shape(centre),psi(psi),fi(fi),teta(teta){
+MeshShape::MeshShape(std::ifstream &file,Point centre, double psi, double fi, double teta, double min_size):Shape(centre),psi(psi),fi(fi),teta(teta){
     std::string str;
     Triangle t;
     Point p;
     int v0,v1,v2;
     std::vector<Point> points;
     while(getline(file,str)){
-        if(str[0] == 'v' && str[1] != 'n'){
+        if(str[0] == 'v' && str[1] == ' '){
              if(sscanf(str.c_str()+1,"%lf %lf %lf",&p.x,&p.y,&p.z)==3){
                 points.push_back(p);
              }
@@ -24,17 +24,17 @@ MeshShape::MeshShape(std::ifstream &file,Point centre, double psi, double fi, do
     }
     printf("points number = %d\n",points.size());
     printf("triangles number = %d\n",triangles.size());
-    make_octtree();
+    make_octtree(min_size);
 }
-MeshShape::MeshShape(const std::vector<Triangle>& triangles,Point centre, double psi, double fi, double teta):Shape(centre),psi(psi),fi(fi),teta(teta),triangles(triangles){
-    make_octtree();
+MeshShape::MeshShape(const std::vector<Triangle>& triangles,Point centre, double psi, double fi, double teta, double min_size):Shape(centre),psi(psi),fi(fi),teta(teta),triangles(triangles){
+    make_octtree(min_size);
 }
 MeshShape::~MeshShape(){
     if(octtree != nullptr){
         delete octtree;
     }
 }
-void MeshShape::make_octtree(){
+void MeshShape::make_octtree(double min_size){
     std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
     Point min = {std::numeric_limits<double>::max(),std::numeric_limits<double>::max(),std::numeric_limits<double>::max()};
     Point max = {std::numeric_limits<double>::min(),std::numeric_limits<double>::min(),std::numeric_limits<double>::min()};
@@ -49,7 +49,7 @@ void MeshShape::make_octtree(){
         }
     }
     toctt::Box boundary{(min+max)*0.5,(max-min)*0.7};
-    octtree = new toctt::TriangleOctTree(boundary, triangles);
+    octtree = new toctt::TriangleOctTree(boundary, triangles, min_size);
     std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
     int elapsed_ms = static_cast<int>( std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() );
     printf("OctTree creating time = %d milliseconds\n",elapsed_ms);

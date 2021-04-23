@@ -279,12 +279,12 @@ namespace toctt{
         } // for
         return (*t_near <= *t_far && *t_far >=0);
     }
-    TriangleOctTree::TriangleOctTree(Box b):boundary(b){
+    TriangleOctTree::TriangleOctTree(Box b, double min_size):min_size(min_size),boundary(b){
         for(int i = 0; i < 8; i++){
             child[i] = nullptr;
         }
     }
-    TriangleOctTree::TriangleOctTree(Box b,const std::vector<Triangle>& t):boundary(b){
+    TriangleOctTree::TriangleOctTree(Box b,const std::vector<Triangle>& t,double min_size):min_size(min_size),boundary(b){
         for(int i = 0; i < 8; i++){
             child[i] = nullptr;
         }
@@ -425,6 +425,10 @@ namespace toctt{
         for(;!stack.empty();){
             node = stack.back();
             stack.pop_back();
+            // Можно ложить t_near, t_far, t1, t2, t3 в стэк потом извлекать делить на два и получать новые значения это наверное будет немного быстрее ,но мне лень так делать!!!
+            if(!node->boundary.intersect(ray,&t_near,&t_far)){
+                continue;
+            }
             if(!node->ptrs_triangles.empty()){
                 tmin = std::numeric_limits<double>::max();
                 intersect = false;
@@ -441,10 +445,6 @@ namespace toctt{
                     *t = tmin;
                     return true;
                 }
-                continue;
-            }
-            // Можно ложить t_near, t_far, t1, t2, t3 в стэк потом извлекать делить на два и получать новые значения это наверное будет немного быстрее ,но мне лень так делать!!!
-            if(!node->boundary.intersect(ray,&t_near,&t_far)){
                 continue;
             }
             if(ray.direction[0] != 0){

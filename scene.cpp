@@ -10,7 +10,7 @@ void Scene::render(const char *filename){
     Vector sideways,start;
     double screen_size[2];
     double pixel_size;
-    unsigned char res[screen_res[0]][screen_res[1]];
+    //unsigned char res[screen_res[0]][screen_res[1]];
 
     screen_size[1] = dist*sin(alpha);
     pixel_size = screen_size[1]/screen_res[1];
@@ -33,16 +33,16 @@ void Scene::render(const char *filename){
     double max_dist;
 
     for(auto obj : objects){
-        if((obj->get_centre()-cam).lenght() < min_dist){
-            min_dist = (obj->get_centre()-cam).lenght();
+        if((obj->centre-cam).lenght() < min_dist){
+            min_dist = (obj->centre-cam).lenght();
         }
-        if((obj->get_centre()-cam).lenght() > max_dist){
-            max_dist = (obj->get_centre()-cam).lenght();
+        if((obj->centre-cam).lenght() > max_dist){
+            max_dist = (obj->centre-cam).lenght();
         }
     }
 
     for(auto obj : objects){
-        obj->set_color(min_color+(((obj->get_centre()-cam).lenght()-min_dist)/max_dist)*max_color);
+        obj->color = (min_color+(((obj->centre-cam).lenght()-min_dist)/max_dist)*max_color);
     }
     //
 
@@ -51,18 +51,18 @@ void Scene::render(const char *filename){
 #pragma omp parallel
 {
 
-    //N-normal,V - on camera, L - on light
-   Vector Ntmp,N,V,L;
+    //N-normal,V - on camera, L - on light, H = L+V/|L+V|
+   Vector Ntmp,N,V,L,H;
    Ray ray;
    ray.begin = cam;
    Point intersect_point;
+   Shape* qq;
    double t,tmin = std::numeric_limits<double>::max();
-   unsigned char basic_color;
    double ambient;
    double diffuse;
    double specular;
    double pixel_color;
-   double sNL,sNV,sLV,sRV;
+   double sNL,sNV,sLV,sRV,sNH;
 
 #pragma omp for
     for(int j = 0; j < screen_res[1]; j++){
@@ -79,12 +79,12 @@ void Scene::render(const char *filename){
                     if(t < tmin && t > dist){
                         N = Ntmp;
                         tmin = t;
-                        basic_color = obj->get_color();
+                        qq = obj;
                     }
                 }
             }
             if(tmin > vis_limit){
-                res[i][j] = 0;
+                //res[i][j] = 0;
                 image(i,j,0) = image(i,j,1) = image(i,j,2) = 0;
             }
             else{
@@ -92,19 +92,24 @@ void Scene::render(const char *filename){
                 intersect_point = ray.begin+ray.direction*tmin;
                 L = light-intersect_point;
                 L = L*(1/L.lenght());
+                H = L+V;
+                H = H*(1/H.lenght());
                 sNL = N*L;
-                sNL = sNL > 0 ? sNL : 0;
-                sNV = N*V;
-                sNV = sNV > 0 ? sNV : 0;
-                sLV = L*V;
-                sLV = sLV > 0 ? sLV : 0;
-                sRV = sNL*sNV-sLV;
-                sRV = sRV > 0 ? sRV : 0;
-                ambient = 0.1*static_cast<double>(basic_color);
-                diffuse = static_cast<double>(basic_color)*sNL*0.8;
-                specular = 255.0*(std::pow(sRV,1000));
+                sNL = sNL > 0 ? sNL : 0.0;
+                //sNV = N*V;
+                //sNV = sNV > 0 ? sNV : 0.0;
+                //sLV = L*V;
+                //sLV = sLV > 0 ? sLV : 0.0;
+                //sRV = sNL*sNV-sLV;
+                //sRV = sRV > 0 ? sRV : 0.0;
+                sNH = N*H;
+                sNH = sNH > 0 ? sNH : 0.0;
+                ambient = qq->Ka*static_cast<double>(qq->color);
+                diffuse = static_cast<double>(qq->color)*sNL*qq->Kd;
+                //specular = 255.0*(std::pow(sRV,1.0)); Fong
+                specular = qq->Ks*light_color*(std::pow(sNH,qq->shinines));//Blinn-Fong
                 pixel_color = ambient+diffuse+specular;
-                res[i][j] = static_cast<unsigned char>(pixel_color>255?255:pixel_color<0?0:pixel_color);
+                //res[i][j] = static_cast<unsigned char>(pixel_color>255?255:pixel_color<0?0:pixel_color);
                 //printf("%d, %d, color = %d %lf\n",i,j,static_cast<unsigned char>(pixel_color>255?255:pixel_color<0?0:pixel_color),pixel_color);
                 image(i,j,0) = image(i,j,1) = image(i,j,2) = static_cast<unsigned char>(pixel_color>255?255:pixel_color<0?0:pixel_color);
             }
@@ -115,6 +120,7 @@ void Scene::render(const char *filename){
     std::chrono::time_point<std::chrono::system_clock> end_t = std::chrono::system_clock::now();
     int elapsed_s = static_cast<int>( std::chrono::duration_cast<std::chrono::seconds>(end_t - start_t).count() );
     printf("render time = %d seconds\n",elapsed_s);
+    image.save(filename);
     image.display("Render");
 }
 void Scene::add_object(Shape *qq){

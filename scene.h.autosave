@@ -15,9 +15,6 @@ private:
     double dist;
     double vis_limit;
     double alpha;
-    double Ka = 0.1;
-    double Kd = 0.8;
-    double Ks = 0.7;
     unsigned char light_color = 128;
     int screen_res[2];
     std::vector<Shape*> objects;

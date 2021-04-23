@@ -13,10 +13,10 @@ class MeshShape:public Shape
     toctt::TriangleOctTree *octtree;
 public:
     MeshShape() = delete;
-    MeshShape(const std::vector<Triangle>&,Point centre = {0,0,0}, double psi = 0.0, double fi = 0.0, double teta = 0.0);
-    MeshShape(std::ifstream &file,Point centre = {0,0,0}, double psi = 0.0, double fi = 0.0, double teta = 0.0);
+    MeshShape(const std::vector<Triangle>&,Point centre = {0,0,0}, double psi = 0.0, double fi = 0.0, double teta = 0.0, double min_size = MIN_SIZE);
+    MeshShape(std::ifstream &file,Point centre = {0,0,0}, double psi = 0.0, double fi = 0.0, double teta = 0.0,  double min_size =  MIN_SIZE);
     ~MeshShape();
-    void make_octtree();
+    void make_octtree(double min_size =  MIN_SIZE);
     XYZ coord_transform_to_local(XYZ);
     XYZ coord_transform_to_global(XYZ);
     bool intersections_with_ray(Ray ray, double *t, Vector *normal) override;
