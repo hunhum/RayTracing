@@ -9,7 +9,7 @@ private:
 public:
     Sphere() = delete;
     Sphere(Point,double);
-    bool intersections_with_ray(Ray ray, double *t, Vector *normal) override;
+    bool intersections_with_ray(Ray ray, double *t, Vector *normal, double dist, double vis_limit) override;
 };
 
 #endif // SPHERE_H

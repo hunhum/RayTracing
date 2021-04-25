@@ -20,7 +20,7 @@ public:
     void make_octtree(double min_size =  MIN_SIZE);
     XYZ coord_transform_to_local(XYZ);
     XYZ coord_transform_to_global(XYZ);
-    bool intersections_with_ray(Ray ray, double *t, Vector *normal) override;
+    bool intersections_with_ray(Ray ray, double *t, Vector *normal, double dist, double vis_limit) override;
 };
 
 #endif // MESHSHAPE_H

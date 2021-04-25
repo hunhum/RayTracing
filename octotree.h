@@ -35,7 +35,7 @@ namespace  toctt{
         void insert(Triangle);
         void buildtree(const std::vector<Triangle>&);
         void deletetree(TriangleOctTree*);
-        bool intersections_with_ray(Ray,  double *t, Triangle *triangle);
+        bool intersections_with_ray(Ray,  double *t, Triangle *triangle, double dist, double vis_limit);
     };
 }
 

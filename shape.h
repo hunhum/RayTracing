@@ -14,7 +14,7 @@ struct Shape
     Shape() = default;
     Shape(Point centre):centre(centre){}
     virtual ~Shape(){};
-    virtual bool intersections_with_ray(Ray ray, double *t, Vector *normal) = 0;
+    virtual bool intersections_with_ray(Ray ray, double *t, Vector *normal, double dist, double vis_limit) = 0;
 };
 
 #endif // SHAPE_H

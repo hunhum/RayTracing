@@ -71,7 +71,7 @@ XYZ MeshShape::coord_transform_to_local(XYZ g){
     l.z = (sin(alpha)*sin(beta))*g.x+(cos(alpha)*sin(beta))*g.y+(cos(beta))*g.z;
     return l;
 }
-bool MeshShape::intersections_with_ray(Ray ray, double *t, Vector *normal){
+bool MeshShape::intersections_with_ray(Ray ray, double *t, Vector *normal, double dist, double vis_limit){
     Ray lray;
     Vector N;
     Triangle qq;
@@ -82,7 +82,7 @@ bool MeshShape::intersections_with_ray(Ray ray, double *t, Vector *normal){
         throw std::runtime_error("OctTree not created!!!\n");
     }
     else{
-        if(!octtree->intersections_with_ray(lray,&tmin,&qq)){
+        if(!octtree->intersections_with_ray(lray,&tmin,&qq,dist,vis_limit)){
             return false;
         }
     }

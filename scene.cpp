@@ -75,7 +75,7 @@ void Scene::render(const char *filename){
             //
             tmin = std::numeric_limits<double>::max();
             for(auto obj : objects){
-                if(obj->intersections_with_ray(ray,&t,&Ntmp)){
+                if(obj->intersections_with_ray(ray,&t,&Ntmp,dist,vis_limit)){
                     if(t < tmin && t > dist){
                         N = Ntmp;
                         tmin = t;

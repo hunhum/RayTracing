@@ -412,7 +412,7 @@ namespace toctt{
             }
         }
     }
-    bool TriangleOctTree::intersections_with_ray(Ray ray, double *t, Triangle* triangle){
+    bool TriangleOctTree::intersections_with_ray(Ray ray, double *t, Triangle* triangle, double dist, double vis_limit){
         //Надо так сделать чтоб в стек кубы добавлялись в порядке обратном пресечению их с лучом;
         //std::vector<double> t_stack;
         std::vector<TriangleOctTree*> stack;
@@ -434,8 +434,8 @@ namespace toctt{
                 intersect = false;
                 for(auto ptr : node->ptrs_triangles){
                     if(triangles[ptr].intersect(ray,&t_tmp)){
-                        intersect = true;
-                        if(t_tmp < tmin){
+                        if(t_tmp < tmin && t_tmp > dist && t_tmp < vis_limit){
+                            intersect = true;
                             tmin = t_tmp;
                             *triangle = triangles[ptr];
                         }
